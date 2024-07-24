@@ -10,10 +10,10 @@ public class Controls extends JPanel {
     private JSlider speedSlider;
     private JLabel angleLabel;
     private JLabel speedLabel;
-    private GamePanel gamePanel; // GamePanel referansı
+    private GamePanel gamePanel;
 
     public Controls(GamePanel gamePanel) {
-        this.gamePanel = gamePanel; // Referansı sakla
+        this.gamePanel = gamePanel;
 
         angleSlider = new JSlider(30, 90, 45);
         speedSlider = new JSlider(30, 100, 50);
@@ -24,7 +24,7 @@ public class Controls extends JPanel {
         angleSlider.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                gamePanel.setFocusable(true); // gamePanel kullan
+                gamePanel.setFocusable(true);
                 gamePanel.requestFocusInWindow();
             }
         });
@@ -32,7 +32,7 @@ public class Controls extends JPanel {
         speedSlider.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-                gamePanel.setFocusable(true); // gamePanel kullan
+                gamePanel.setFocusable(true);
                 gamePanel.requestFocusInWindow();
             }
         });
