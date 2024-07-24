@@ -3,7 +3,7 @@ import java.awt.*;
 
 public class Main {
     public static void main(String[] args) {
-        JFrame frame = new JFrame("kus vurma ama fatihin topuyla");
+        JFrame frame = new JFrame("kus vurmaca");
         Controls controls = new Controls();
         GamePanel gamePanel = new GamePanel(controls);
 

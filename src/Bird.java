@@ -8,10 +8,14 @@ public class Bird {
     private final int height = 50;
     private final Image birdImage;
     private boolean isMovingX, isMovingY;
+    private boolean drawWall;
+    private Rectangle wall;
+
 
     public Bird() {
         birdImage = new ImageIcon("bird.png").getImage();
         respawn();
+        wall = new Rectangle(0, 0, 0, 0);
     }
 
     public void update() {
@@ -39,30 +43,59 @@ public class Bird {
 
     public void draw(Graphics g) {
         g.drawImage(birdImage, x, y, width, height, null);
+        if (drawWall) {
+            g.setColor(Color.RED);
+            g.fillRect(wall.x, wall.y, wall.width, wall.height);
+        }
+        //random kus dogurma yeri
+        g.drawRect(250,100,700,400);
     }
 
     public Rectangle getBounds() {
         return new Rectangle(x, y, width, height);
     }
 
+    public Rectangle getWallBounds() {
+        return wall;
+    }
+
     public void respawn() {
-        x = 150 + (int) (Math.random() * 700);
+        SoundUtils.playSound("hitting-bird.wav");
+        x = 250 + (int) (Math.random() * 700);
         y = 100 + (int) (Math.random() * 400);
         speedX = 2 + (int) (Math.random() * 3);
         speedY = 2 + (int) (Math.random() * 3);
-        isMovingX = false;
-        isMovingY = false;
+
+        if (drawWall) {
+            wall.setBounds(x - 20 - ((int)(Math.random()*40)), y - ((int)(Math.random()*40)), 8, 80);
+        }
     }
 
-
     public void increaseSpeed(int level) {
-        if (level > 1) {
-            isMovingX = true;
-            speedX += level;
-            if (level > 2) {
+        drawWall = false;
+        switch (level) {
+            case 5:
+                isMovingX = false;
+                isMovingY = false;
+                drawWall = true;
+                wall.setBounds(x - 20 - ((int)(Math.random()*40)), y - ((int)(Math.random()*40)), 8, 80);
+                break;
+            case 4:
+                isMovingX = true;
                 isMovingY = true;
+                speedX += level;
                 speedY += level;
-            }
+                break;
+            case 3:
+                isMovingX = true;
+                isMovingY = true;
+                speedX += level;
+                break;
+            case 2:
+                isMovingX = true;
+                break;
+            default:
+                break;
         }
     }
 }

@@ -37,26 +37,13 @@ public class CannonBall {
     public boolean isOutOfScreen() {
         return x < 0 || x > 1200 || y > 600;
     }
+
+    public void bounceOffWall() {
+        vx = -vx;
+    }
+
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-türkiyeye gelen ilk bilgisayar ibm 650 kgm'ye gelmistir.
-
-
- */
 
 
 
