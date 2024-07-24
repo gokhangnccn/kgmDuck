@@ -4,8 +4,9 @@ import java.awt.*;
 public class Main {
     public static void main(String[] args) {
         JFrame frame = new JFrame("kus vurmaca");
-        Controls controls = new Controls();
-        GamePanel gamePanel = new GamePanel(controls);
+        GamePanel gamePanel = new GamePanel(null);
+        Controls controls = new Controls(gamePanel);
+        gamePanel = new GamePanel(controls);
 
         frame.setLayout(new BorderLayout());
         frame.add(gamePanel, BorderLayout.CENTER);

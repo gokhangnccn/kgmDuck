@@ -2,19 +2,40 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 
 public class Controls extends JPanel {
     private JSlider angleSlider;
     private JSlider speedSlider;
     private JLabel angleLabel;
     private JLabel speedLabel;
+    private GamePanel gamePanel; // GamePanel referansı
 
-    public Controls() {
+    public Controls(GamePanel gamePanel) {
+        this.gamePanel = gamePanel; // Referansı sakla
+
         angleSlider = new JSlider(30, 90, 45);
         speedSlider = new JSlider(30, 100, 50);
 
         angleLabel = new JLabel("Angle: " + angleSlider.getValue());
         speedLabel = new JLabel("Speed: " + speedSlider.getValue());
+
+        angleSlider.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                gamePanel.setFocusable(true); // gamePanel kullan
+                gamePanel.requestFocusInWindow();
+            }
+        });
+
+        speedSlider.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                gamePanel.setFocusable(true); // gamePanel kullan
+                gamePanel.requestFocusInWindow();
+            }
+        });
 
         angleSlider.addChangeListener(new ChangeListener() {
             @Override

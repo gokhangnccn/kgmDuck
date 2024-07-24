@@ -18,22 +18,25 @@ public class GamePanel extends JPanel implements ActionListener {
     private final Timer timer;
     private final ArrayList<CannonBall> cannonBalls;
     private Bird[] birds;
-    private final Controls controls;
+    private final Controls controls; // Controls referansı
     private final int cannonX = 50;
     private final int cannonY = 500;
     private int score;
+    private final int finishScore;
+    private int firstScore;
+    private int hitScore;
+    private int missScore;
     private int level;
     private final int[] nextLevel;
-    private final long startTime;
-    private boolean isBigCannonBall;
-    private String message;
-
+    private long startTime;
     private final Image backgroundImage;
     private final Image cannon;
     private final Image cannonWheel;
 
+    private boolean completed;
+
     public GamePanel(Controls controls) {
-        this.controls = controls;
+        this.controls = controls; // Controls referansı
         setPreferredSize(new Dimension(1200, 600));
         setBackground(Color.WHITE);
         cannonBalls = new ArrayList<>();
@@ -48,12 +51,18 @@ public class GamePanel extends JPanel implements ActionListener {
         timer.start();
 
         startTime = System.currentTimeMillis();
+
         score = 50;
+        finishScore = 1000;
+        firstScore = 50;
+        hitScore = 50;
+        missScore = 10;
+
 
         level = 1;
-        nextLevel = new int[]{100, 200, 300, 400, 500};
-        isBigCannonBall = false;
-        message = "";
+        nextLevel = new int[]{200, 400, 600, 800, 1000};
+
+        completed = false;
 
         addMouseListener(new MouseAdapter() {
             @Override
@@ -62,8 +71,7 @@ public class GamePanel extends JPanel implements ActionListener {
             }
         });
 
-        setFocusable(true);
-        requestFocusInWindow();
+
 
         addFocusListener(new FocusAdapter() {
             @Override
@@ -73,56 +81,52 @@ public class GamePanel extends JPanel implements ActionListener {
             }
         });
 
-        addKeyListeners();
-    }
-
-    private void addKeyListeners() {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-                    buyBigCannonBall();
+                    shootCannonBall();
                 }
             }
         });
+
+        setFocusable(true);
+        requestFocusInWindow();
+        addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                setFocusable(true);
+                requestFocusInWindow();
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                setFocusable(true);
+                requestFocusInWindow();
+            }
+        });
+
+
+
+
+
     }
 
     private void shootCannonBall() {
-        if (cannonBalls.size() < 20) {
+        if (cannonBalls.size() < 1) {
             int angle = controls.getAngle();
             double speed = controls.getSpeed() / 5.5;
             double angleRad = Math.toRadians(angle);
-            int cannonLength = 60;
+            int cannonLength = 120;
 
             int cannonBallX = cannonX + (int) (cannonLength * Math.cos(angleRad));
             int cannonBallY = cannonY - (int) (cannonLength * Math.sin(angleRad));
 
-            CannonBall cannonBall = new CannonBall(cannonBallX, cannonBallY, angle, speed, isBigCannonBall);
+            CannonBall cannonBall = new CannonBall(cannonBallX, cannonBallY, angle, speed);
             cannonBalls.add(cannonBall);
 
             SoundUtils.playSound("shot-fire.wav");
-            isBigCannonBall = false; // Reset big cannonball flag after shooting
         }
-    }
-
-    private void buyBigCannonBall() {
-        if (score >= 100) {
-            score -= 100;
-            isBigCannonBall = true;
-            message = "Topunuz Büyütüldü!";
-        } else {
-            message = "Yeterli puanınız yok!";
-        }
-
-        Timer messageTimer = new Timer(2000, new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                message = "";
-                ((Timer) e.getSource()).stop();
-            }
-        });
-        messageTimer.setRepeats(false);
-        messageTimer.start();
     }
 
     @Override
@@ -139,32 +143,25 @@ public class GamePanel extends JPanel implements ActionListener {
             bird.draw(g);
         }
         drawScoreAndTime(g);
-        drawMessage(g);
     }
 
     private void drawCannon(Graphics g) {
         int angle = controls.getAngle();
         Graphics2D g2d = (Graphics2D) g.create();
 
-        // Topun ve tekerleğin boyutlarını al
-        int cannonWidth = cannon.getWidth(this);
         int cannonHeight = cannon.getHeight(this);
         int cannonWheelWidth = cannonWheel.getWidth(this);
         int cannonWheelHeight = cannonWheel.getHeight(this);
 
-        // Çizim merkezini topun sol alt köşesi olarak belirle
         int cannonBaseX = cannonX - cannonWheelWidth / 2;
         int cannonBaseY = cannonY - cannonWheelHeight / 2;
 
-        // Tekerlek ve topun döndürme merkezini belirle
         g2d.translate(cannonBaseX + 30, cannonBaseY + cannonWheelHeight - 30);
-        g2d.rotate(Math.toRadians(-angle + 30)); // Topun döndürme açısını belirle
+        g2d.rotate(Math.toRadians(-angle + 30));
 
-        // Topun kendisini çiz
         g2d.drawImage(cannon, -30, -cannonHeight + 30, this);
 
-        // Çizim merkezini geri al ve tekerleği çiz
-        g2d.rotate(Math.toRadians(angle)); // Döndürmeyi geri al
+        g2d.rotate(Math.toRadians(angle));
         g2d.drawImage(cannonWheel, 0, -10, this);
 
         g2d.dispose();
@@ -182,54 +179,94 @@ public class GamePanel extends JPanel implements ActionListener {
         String scoreText = "Score: " + score;
         String timeText = "Time: " + (System.currentTimeMillis() - startTime) / 1000 + "s";
         String levelText = "Level: " + level;
+        String nextText = "Sonraki Level: " + nextLevel[level-1];
 
         int x = 10;
         int y = 30;
         g2d.drawString(scoreText, x, y);
         g2d.drawString(timeText, x, y + 20);
         g2d.drawString(levelText, x, y + 40);
-    }
+        g2d.drawString(nextText, x, y + 60);
 
-
-    private void drawMessage(Graphics g) {
-        if (!message.isEmpty()) {
-            Graphics2D g2d = (Graphics2D) g;
-            g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-            g2d.setFont(new Font("Arial", Font.BOLD, 20));
-            g2d.setColor(Color.RED);
-            g2d.drawString(message, 400, 50);
-        }
+        g2d.drawString("Press the MOUSE1 button or the SPACE bar to shoot!",getWidth()/2 - getWidth()/4 ,getHeight() - 20);
     }
 
     private void levelUp() {
-        if (level < 5 && score >= nextLevel[level - 1]) {
+        if (level < nextLevel.length && score >= nextLevel[level - 1]) {
             level++;
             birds = new Bird[1];
-            for (int i = 0; i < birds.length; i++) {
-                birds[i] = new Bird();
-                birds[i].increaseSpeed(level);
+            for (Bird bird : birds) {
+                bird.increaseSpeed(level);
             }
-
-            isBigCannonBall = false;
         }
     }
 
-    @Override
-    public void updateUI() {
-        super.updateUI();
-        addKeyListeners();
+    private void showCompletionDialog() {
+        long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+        String message = "Tebrikler bitirdiniz!\nSüreniz: " + elapsedTime + " saniye";
+
+        int option = JOptionPane.showOptionDialog(
+                this,
+                message,
+                "Oyun Bitti",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                new String[]{"Yeniden Oyna", "Kapat"},
+                "Yeniden Oyna"
+        );
+
+        if (option == JOptionPane.YES_OPTION) {
+            restartGame();
+        } else {
+            System.exit(0);
+        }
     }
+
+    private void showFailureDialog() {
+        String message = "Maalesef 0 puana ulaştığınız için başarısız oldunuz..";
+
+        int option = JOptionPane.showOptionDialog(
+                this,
+                message,
+                "Başarısız",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                new String[]{"Yeniden Oyna", "Kapat"},
+                "Yeniden Oyna"
+        );
+
+        if (option == JOptionPane.YES_OPTION) {
+            restartGame();
+        } else {
+            System.exit(0);
+        }
+    }
+
+    private void restartGame() {
+        score = firstScore;
+        level = 1;
+        birds = new Bird[1];
+        birds[0] = new Bird();
+        cannonBalls.clear();
+        startTime = System.currentTimeMillis();
+        completed = false;
+        timer.start();
+        repaint();
+    }
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
         List<CannonBall> outOfBoundsBalls = new ArrayList<>();
-        List<CannonBall> hitBalls = new ArrayList<>(); //
+        List<CannonBall> hitBalls = new ArrayList<>();
 
         for (CannonBall cannonBall : cannonBalls) {
             cannonBall.update();
             if (cannonBall.isOutOfScreen()) {
                 outOfBoundsBalls.add(cannonBall);
-                score -= 5; // Top ekran dışına çıktığında 5 puan eksilir
+                score -= missScore;
             }
         }
 
@@ -238,7 +275,14 @@ public class GamePanel extends JPanel implements ActionListener {
         for (Bird bird : birds) {
             bird.update();
         }
-
+        if (score >= finishScore && !completed) {
+            completed = true;
+            timer.stop();
+            showCompletionDialog();
+        }
+        if(score <= 0){
+            showFailureDialog();
+        }
         updateUI();
         checkCollisions(hitBalls);
         cannonBalls.removeAll(hitBalls);
@@ -254,9 +298,8 @@ public class GamePanel extends JPanel implements ActionListener {
                 Rectangle wallBounds = bird.getWallBounds();
                 if (cannonBallBounds.intersects(birdBounds)) {
                     bird.respawn();
-                    score += 15;
+                    score += hitScore;
                     hitBalls.add(cannonBall);
-                    isBigCannonBall = false;
                     break;
                 } else if (cannonBallBounds.intersects(wallBounds)) {
                     cannonBall.bounceOffWall();
@@ -264,5 +307,4 @@ public class GamePanel extends JPanel implements ActionListener {
             }
         }
     }
-
 }

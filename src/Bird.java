@@ -21,18 +21,18 @@ public class Bird {
     public void update() {
         if (isMovingX) {
             x += speedX;
-            if (x > 850) {
-                x = 850;
+            if (x > 950) {
+                x = 950;
                 speedX = -speedX;
-            } else if (x < 150) {
-                x = 150;
+            } else if (x < 250) {
+                x = 250;
                 speedX = -speedX;
             }
         }
         if (isMovingY) {
             y += speedY;
-            if (y > 450) {
-                y = 450;
+            if (y > 500) {
+                y = 500;
                 speedY = -speedY;
             } else if (y < 100) {
                 y = 100;
@@ -47,8 +47,6 @@ public class Bird {
             g.setColor(Color.RED);
             g.fillRect(wall.x, wall.y, wall.width, wall.height);
         }
-        //random kus dogurma yeri
-        g.drawRect(250,100,700,400);
     }
 
     public Rectangle getBounds() {
