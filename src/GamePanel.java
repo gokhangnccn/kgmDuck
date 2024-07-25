@@ -1,18 +1,10 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
+import java.awt.event.*;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class GamePanel extends JPanel implements ActionListener {
     private final Timer timer;
@@ -58,7 +50,6 @@ public class GamePanel extends JPanel implements ActionListener {
         hitScore = 50;
         missScore = 10;
 
-
         level = 1;
         nextLevel = new int[]{200, 400, 600, 800, 1000};
 
@@ -86,6 +77,14 @@ public class GamePanel extends JPanel implements ActionListener {
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_SPACE) {
                     shootCannonBall();
+                } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+                    controls.incrementAngle();
+                } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+                    controls.decrementAngle();
+                } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                    controls.incrementSpeed();
+                } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+                    controls.decrementSpeed();
                 }
             }
         });
@@ -105,11 +104,6 @@ public class GamePanel extends JPanel implements ActionListener {
                 requestFocusInWindow();
             }
         });
-
-
-
-
-
     }
 
     private void shootCannonBall() {
@@ -179,7 +173,7 @@ public class GamePanel extends JPanel implements ActionListener {
         String scoreText = "Score: " + score;
         String timeText = "Time: " + (System.currentTimeMillis() - startTime) / 1000 + "s";
         String levelText = "Level: " + level;
-        String nextText = "Sonraki Level: " + nextLevel[level-1];
+        String nextText = "Sonraki Level: " + nextLevel[level - 1];
 
         int x = 10;
         int y = 30;
@@ -188,15 +182,16 @@ public class GamePanel extends JPanel implements ActionListener {
         g2d.drawString(levelText, x, y + 40);
         g2d.drawString(nextText, x, y + 60);
 
-        g2d.drawString("Press the MOUSE1 button or the SPACE bar to shoot!",getWidth()/2 - getWidth()/4 ,getHeight() - 20);
+        g2d.drawString("Press the MOUSE1 button or the SPACE bar to shoot!", getWidth() / 2 - getWidth() / 4, getHeight() - 20);
     }
 
     private void levelUp() {
         if (level < nextLevel.length && score >= nextLevel[level - 1]) {
             level++;
             birds = new Bird[1];
-            for (Bird bird : birds) {
-                bird.increaseSpeed(level);
+            for (int i = 0; i < birds.length; i++) {
+                birds[i] = new Bird();
+                birds[i].increaseSpeed(level);
             }
         }
     }
@@ -256,7 +251,6 @@ public class GamePanel extends JPanel implements ActionListener {
         repaint();
     }
 
-
     @Override
     public void actionPerformed(ActionEvent e) {
         List<CannonBall> outOfBoundsBalls = new ArrayList<>();
@@ -280,7 +274,7 @@ public class GamePanel extends JPanel implements ActionListener {
             timer.stop();
             showCompletionDialog();
         }
-        if(score <= 0){
+        if (score <= 0) {
             showFailureDialog();
         }
         updateUI();

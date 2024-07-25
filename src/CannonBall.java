@@ -4,7 +4,7 @@ public class CannonBall {
     private double x, y;
     private double vx, vy;
     private final double gravity = 9.8;
-    private final double friction = 0.995;
+    private final double friction = 0.994;
     public CannonBall(double startX, double startY, double angle, double speed) {
         this.x = startX;
         this.y = startY;

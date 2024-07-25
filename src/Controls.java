@@ -65,4 +65,20 @@ public class Controls extends JPanel {
     public double getSpeed() {
         return speedSlider.getValue();
     }
+
+    public void incrementAngle() {
+        angleSlider.setValue(Math.min(angleSlider.getValue() + 1, angleSlider.getMaximum()));
+    }
+
+    public void decrementAngle() {
+        angleSlider.setValue(Math.max(angleSlider.getValue() - 1, angleSlider.getMinimum()));
+    }
+
+    public void incrementSpeed() {
+        speedSlider.setValue(Math.min(speedSlider.getValue() + 1, speedSlider.getMaximum()));
+    }
+
+    public void decrementSpeed() {
+        speedSlider.setValue(Math.max(speedSlider.getValue() - 1, speedSlider.getMinimum()));
+    }
 }

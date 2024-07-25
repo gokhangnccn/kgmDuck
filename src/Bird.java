@@ -33,13 +33,10 @@ public class Bird {
             y += speedY;
             if (y > 500) {
                 y = 500;
-                if (y > 400) {
-                    y = 400;
-                    speedY = -speedY;
-                } else if (y < 100) {
-                    y = 100;
-                    speedY = -speedY;
-                }
+                speedY = -speedY;
+            } else if (y < 100) {
+                y = 100;
+                speedY = -speedY;
             }
         }
     }
