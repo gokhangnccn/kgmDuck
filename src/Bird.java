@@ -10,10 +10,11 @@ public class Bird {
     private boolean isMovingX, isMovingY;
     private boolean drawWall;
     private Rectangle wall;
+    private boolean initialSetup; // New flag for initial setup
 
-
-    public Bird() {
+    public Bird(boolean initialSetup) {
         birdImage = new ImageIcon("bird.png").getImage();
+        this.initialSetup = initialSetup;
         respawn();
         wall = new Rectangle(0, 0, 0, 0);
     }
@@ -58,7 +59,7 @@ public class Bird {
     }
 
     public void respawn() {
-        SoundUtils.playSound("hitting-bird.wav");
+
         x = 250 + (int) (Math.random() * 700);
         y = 100 + (int) (Math.random() * 400);
         speedX = 2 + (int) (Math.random() * 3);
@@ -95,5 +96,9 @@ public class Bird {
             default:
                 break;
         }
+    }
+
+    public void setInitialSetup(boolean initialSetup) {
+        this.initialSetup = initialSetup;
     }
 }
