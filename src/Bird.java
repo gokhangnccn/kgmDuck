@@ -10,7 +10,7 @@ public class Bird {
     private boolean isMovingX, isMovingY;
     private boolean drawWall;
     private Rectangle wall;
-    private boolean initialSetup; // New flag for initial setup
+    private boolean initialSetup;
 
     public Bird(boolean initialSetup) {
         birdImage = new ImageIcon("bird.png").getImage();

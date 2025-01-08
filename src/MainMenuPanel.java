@@ -21,25 +21,21 @@ public class MainMenuPanel extends JPanel {
         setLayout(null);
         SoundUtils.playBackgroundMusic("gamebackground.wav");
 
-        // Load background image
         backgroundImage = new ImageIcon("background.png").getImage();
 
-        // Title label
-        titleLabel = new JLabel("Kuş Vurmaca");
+        titleLabel = new JLabel("kgmDuck");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 72));
         titleLabel.setBounds(0, 90, 1200, 80);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         titleLabel.setForeground(new Color(0, 102, 204));
         add(titleLabel);
 
-        // Username label
         usernameLabel = new JLabel("Kullanıcı Adı:");
         usernameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
         usernameLabel.setBounds(450, 230, 300, 30);
         usernameLabel.setForeground(Color.BLACK);
         add(usernameLabel);
 
-        // Username field
         usernameField = new JTextField();
         usernameField.setBounds(450, 260, 300, 40);
         usernameField.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -47,7 +43,6 @@ public class MainMenuPanel extends JPanel {
         usernameField.setBorder(BorderFactory.createLineBorder(new Color(0, 102, 204), 2));
         add(usernameField);
 
-        // Start button
         startButton = new JButton("Başla");
         startButton.setBounds(525, 310, 150, 40);
         startButton.setFont(new Font("Arial", Font.BOLD, 18));
@@ -57,7 +52,6 @@ public class MainMenuPanel extends JPanel {
         startButton.setBorder(BorderFactory.createEmptyBorder());
         add(startButton);
 
-        // Reset Scores button
         resetScoresButton = new JButton("Skorları Sıfırla");
         resetScoresButton.setBounds(475, 535, 250, 40);
         resetScoresButton.setFont(new Font("Arial", Font.BOLD, 18));
@@ -67,7 +61,7 @@ public class MainMenuPanel extends JPanel {
         resetScoresButton.setBorder(BorderFactory.createEmptyBorder());
         add(resetScoresButton);
 
-        // High Scores Area
+
         highScoresArea = new JTextArea();
         highScoresArea.setBounds(450, 370, 300, 150);
         highScoresArea.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -75,10 +69,10 @@ public class MainMenuPanel extends JPanel {
         highScoresArea.setBorder(BorderFactory.createLineBorder(new Color(0, 102, 204), 2));
         add(highScoresArea);
 
-        // Load and display high scores
+
         loadHighScores();
 
-        // Button actions
+
         startButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -114,7 +108,6 @@ public class MainMenuPanel extends JPanel {
 
     private void resetHighScores() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter("scores.txt", false))) {
-            // Writing an empty file to clear the scores
             writer.write("");
         } catch (IOException e) {
             e.printStackTrace();
@@ -126,7 +119,6 @@ public class MainMenuPanel extends JPanel {
         super.paintComponent(g);
         g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
 
-        // Draw a translucent overlay for better readability
         Graphics2D g2d = (Graphics2D) g.create();
         g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.5f));
         g2d.setColor(new Color(255, 255, 255));

@@ -46,11 +46,11 @@ public class SoundUtils {
             backgroundClip = AudioSystem.getClip();
             backgroundClip.open(decodedAudioInputStream);
 
-            // Set volume
-            FloatControl gainControl = (FloatControl) backgroundClip.getControl(FloatControl.Type.MASTER_GAIN);
-            gainControl.setValue(-10.0f); // Arka plan sesini 10 desibel kıs
 
-            backgroundClip.loop(Clip.LOOP_CONTINUOUSLY);  // Loop içinde sürekli çağır
+            FloatControl gainControl = (FloatControl) backgroundClip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-10.0f);
+
+            backgroundClip.loop(Clip.LOOP_CONTINUOUSLY);  // Loop içinde
             backgroundClip.start();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException e) {
             e.printStackTrace();
